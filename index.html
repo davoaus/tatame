@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="google" content="notranslate" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no" />
+    <title>BeltUp</title>
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      /* These styles make the body full-height */
+      html,
+      body {
+        height: 100%;
+      }
+      /* These styles disable body scrolling if you are using <ScrollView> */
+      body {
+        overflow: hidden;
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
+    </style>
+  <link rel="icon" href="/tatame/favicon.ico"/>
+    <style id="beltup-viewport">
+      /* Usa a altura DINÂMICA da janela: desconta a barra do navegador
+         (Samsung Internet/Chrome mobile põem controles embaixo), evitando
+         que o rodapé do app fique cortado. */
+      html, body, #root { height: 100%; }
+      @supports (height: 100dvh) {
+        html, body, #root { height: 100dvh; }
+      }
+      body { overscroll-behavior-y: none; }
+      /* Segue o modo do celular já na primeira pintura, antes do app carregar,
+         para não dar aquele flash branco em quem usa o tema escuro. */
+      :root { color-scheme: light dark; }
+      html, body { background: #F5F4F1; }
+      @media (prefers-color-scheme: dark) {
+        html, body { background: #0A0C10; }
+      }
+    </style>
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#101010" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#05070A" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="BeltUp" />
+    <link rel="apple-touch-icon" href="/tatame/apple-touch-icon.png" />
+    <link rel="manifest" href="/tatame/manifest.json" />
+  </head>
+
+  <body>
+    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <!-- The root element for your Expo app. -->
+    <div id="root"></div>
+  <script src="/tatame/_expo/static/js/web/entry-b7c6a1702b65c00119cf6bdeaf498cb2.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/tatame/sw.js', { scope: '/tatame/' })
+          .then(function (reg) {
+            // Procura versão nova ao abrir e a cada 30 min com o app aberto.
+            reg.update().catch(function(){});
+            setInterval(function () { reg.update().catch(function(){}); }, 30 * 60 * 1000);
+          })
+          .catch(function(){});
+      });
+
+      // Quando a versão nova assume, recarrega uma vez para o usuário não
+      // ficar preso numa versão antiga do app.
+      var recarregando = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (recarregando) return;
+        recarregando = true;
+        window.location.reload();
+      });
+    }
+  </script>
+</body>
+</html>
