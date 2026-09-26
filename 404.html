@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="google" content="notranslate" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no" />
+    <title>BeltUp</title>
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      /* These styles make the body full-height */
+      html,
+      body {
+        height: 100%;
+      }
+      /* These styles disable body scrolling if you are using <ScrollView> */
+      body {
+        overflow: hidden;
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
+    </style>
+  <link rel="icon" href="/tatame/favicon.ico"/>  <link rel="preload" as="font" type="font/ttf" crossorigin href="/tatame/assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.b4eb097d35f44ed943676fd56f6bdc51.ttf" />
+  <style>@font-face{font-family:ionicons;src:url("/tatame/assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.b4eb097d35f44ed943676fd56f6bdc51.ttf") format("truetype");font-weight:normal;font-style:normal;font-display:block}</style>
+  <link rel="preload" as="script" href="/tatame/_expo/static/js/web/entry-1e1fb515ff9d66170c3d0db2f551890d.js" />
+  <script>try{document.fonts&&document.fonts.load&&document.fonts.load("16px ionicons")}catch(e){}</script>
+</head>
+
+  <body>
+    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <!-- The root element for your Expo app. -->
+    <div id="root"></div>
+  <script src="/tatame/_expo/static/js/web/entry-1e1fb515ff9d66170c3d0db2f551890d.js" defer></script>
+  <script>
+    (function () {
+      var mostrado = false;
+      function vazio() {
+        var r = document.getElementById('root');
+        return !r || r.childElementCount === 0;
+      }
+      function mostrar(msg) {
+        if (mostrado) return; mostrado = true;
+        try { localStorage.setItem('beltup_ultimo_erro', String(msg).slice(0, 500)); } catch (e) {}
+        setTimeout(function () {
+          if (!vazio()) return;
+          document.body.style.background = '#0A0C10';
+          document.body.innerHTML =
+            '<div style="font-family:system-ui;color:#EEF2F7;padding:28px;max-width:560px;margin:0 auto">' +
+            '<h2 style="font-size:18px;margin:0 0 8px">O app travou ao abrir</h2>' +
+            '<p style="color:#9FACBC;font-size:14px;line-height:1.5;margin:0 0 14px">Mande esta mensagem para o suporte:</p>' +
+            '<pre style="white-space:pre-wrap;background:#131821;border:1px solid #222A36;border-radius:12px;padding:12px;font-size:12px;color:#FF9E9E">' +
+            String(msg).replace(/[<>]/g, '') + '</pre>' +
+            '<button id="beltup-reparar" style="margin-top:16px;background:#2F6BFF;color:#fff;border:0;border-radius:10px;padding:14px 26px;font-size:15px;font-weight:600">Limpar e tentar de novo</button></div>';
+          var btn = document.getElementById('beltup-reparar');
+          if (btn) btn.onclick = function () {
+            var fim = function () { location.replace('/tatame/?r=' + Date.now()); };
+            var t = [];
+            try { localStorage.removeItem('beltup_cache_v3'); localStorage.removeItem('beltup_cache_v2'); } catch (e) {}
+            if (window.caches) t.push(caches.keys().then(function (ks) {
+              return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+            }));
+            if (navigator.serviceWorker) t.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+              return Promise.all(rs.map(function (r) { return r.unregister(); }));
+            }));
+            Promise.all(t).then(fim, fim);
+          };
+        }, 1200);
+      }
+      window.addEventListener('error', function (e) { mostrar((e.message || 'erro') + ' @ ' + (e.filename || '').split('/').pop() + ':' + e.lineno); });
+      window.addEventListener('unhandledrejection', function (e) { mostrar('promessa: ' + ((e.reason && (e.reason.message || e.reason)) || 'erro')); });
+    })();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/tatame/sw.js', { scope: '/tatame/' })
+          .then(function (reg) {
+            // Procura versão nova ao abrir e a cada 30 min com o app aberto.
+            reg.update().catch(function(){});
+            setInterval(function () { reg.update().catch(function(){}); }, 30 * 60 * 1000);
+          })
+          .catch(function(){});
+      });
+
+      // Quando a versão nova assume, recarrega uma vez para o usuário não
+      // ficar preso numa versão antiga do app.
+      var recarregando = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (recarregando) return;
+        recarregando = true;
+        window.location.reload();
+      });
+    }
+  </script>
+  <script>
+    (function () {
+      var CH = 'beltup_reparo';
+      function vazio() {
+        var r = document.getElementById('root');
+        return !r || r.childElementCount === 0;
+      }
+      setTimeout(function () {
+        if (!vazio()) { try { sessionStorage.removeItem(CH); } catch (e) {} return; }
+        try { if (sessionStorage.getItem(CH)) return; sessionStorage.setItem(CH, '1'); } catch (e) {}
+        var fim = function () { location.replace('/tatame/?r=' + Date.now()); };
+        var tarefas = [];
+        if (window.caches) tarefas.push(caches.keys().then(function (ks) {
+          return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+        }));
+        if (navigator.serviceWorker) tarefas.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+          return Promise.all(rs.map(function (r) { return r.unregister(); }));
+        }));
+        Promise.all(tarefas).then(fim, fim);
+      }, 12000);
+    })();
+  </script>
+</body>
+</html>
